@@ -33,13 +33,13 @@ function! Swap_Exists()
     endif
 
     let s:buffer_to_cleanup = expand("<afile>:p")
-    " let v:swapchoice = "q"
+    " let v:swapchoice = "a"
 endfunction
 
 function! Buf_Enter()
     if s:buffer_to_cleanup != ""
         echom "Cleaning up " . s:buffer_to_cleanup
-"        execute "bdelete " . s:buffer_to_cleanup
+        execute "bdelete " . s:buffer_to_cleanup
         let s:buffer_to_cleanup = ""
     endif
 endfunction
