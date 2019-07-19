@@ -39,7 +39,7 @@ endfunction
 function! Buf_Enter()
     if s:buffer_to_cleanup != ""
         echom "Cleaning up " . s:buffer_to_cleanup
-        execute "bdelete " . s:buffer_to_cleanup
+"        execute "bdelete " . s:buffer_to_cleanup
         let s:buffer_to_cleanup = ""
     endif
 endfunction
