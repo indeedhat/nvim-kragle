@@ -33,7 +33,7 @@ function! Swap_Exists()
     endif
 
     let s:buffer_to_cleanup = expand("<afile>:p")
-    " let v:swapchoice = "a"
+    let v:swapchoice = "a"
 endfunction
 
 function! Buf_Enter()
