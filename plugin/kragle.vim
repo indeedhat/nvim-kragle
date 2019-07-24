@@ -21,7 +21,7 @@ if exists("g:kragle_log_path")
     call KragleLog(g:kragle_log_path)
 endif
 
-let s:buffer_to_cleanup = ""
+let s:buffer_clean = v:false
 
 function! Swap_Exists()
     echom "Swap file found for " . expand("<afile>") . ", attempting open on other server."
@@ -32,15 +32,21 @@ function! Swap_Exists()
         return
     endif
 
-    let s:buffer_to_cleanup = expand("<afile>:p")
+    let s:buffer_clean = v:true 
     let v:swapchoice = "a"
 endfunction
 
 function! Buf_Enter()
-    if s:buffer_to_cleanup != ""
-        echom "Cleaning up " . s:buffer_to_cleanup
-        execute "bdelete " . s:buffer_to_cleanup
-        let s:buffer_to_cleanup = ""
+    if s:buffer_clean
+        if "" == expand("<afile>")
+            return 
+        else
+            echom expand("<afile>")
+        endif
+
+        echom "Cleaning up"
+        " execute "bdelete"
+        let s:buffer_clean = v:false
     endif
 endfunction
 
