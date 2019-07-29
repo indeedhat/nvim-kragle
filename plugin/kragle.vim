@@ -1,15 +1,16 @@
 if exists('g:loaded_kragle')
     finish
 endif
+let s:kragle_job = expand("<sfile>:p:h:h") . '/kragle'
 let g:loaded_kragle = 1
 
 function! s:RegisterKragle(host) abort
-    return jobstart(['kragle'], {'rpc': v:true})
+    return jobstart([s:kragle_job], {'rpc': v:true})
 endfunction
 
-call remote#host#Register('kragle', 'x', function('s:RegisterKragle'))
+call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
 
-call remote#host#RegisterPlugin('kragle', '0', [
+call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleLog', 'sync': 0, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'RemoteOpen', 'sync': 1, 'opts': {}},

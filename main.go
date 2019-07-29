@@ -27,6 +27,7 @@ func main() {
 			if nil == client {
 				return "Not found", errors.New("Not found")
 			}
+			client.
 
 			err := client.Command(fmt.Sprintf("drop %s", filePath))
 			if nil != err {
