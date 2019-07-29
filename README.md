@@ -9,8 +9,6 @@ it wouldnt work with more.
 ## Installation
 Vim Plug\
 `Plug 'indeedhat/kragle'`\
-At the moment you will need to manually move the kragle binary to somewhere in your path for this plugin to work
-i will fix this at some point but right now its late and i need to be up early so im going to bed
 
 ## Options
 `g:kragle_log_path` string\
