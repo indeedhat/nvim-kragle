@@ -4,27 +4,29 @@ endif
 let s:kragle_job = expand("<sfile>:p:h:h") . '/kragle'
 let g:loaded_kragle = 1
 
-function! s:RegisterKragle(host) abort
-    return jobstart([s:kragle_job], {'rpc': v:true})
-endfunction
 
-call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
-
-call remote#host#RegisterPlugin(s:kragle_job, '0', [
-\ {'type': 'function', 'name': 'KragleLog', 'sync': 0, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'RemoteOpen', 'sync': 1, 'opts': {}},
-\ ])
-
-call KragleInit(v:servername)
+" Config variables
+" """"""""""""""""
+let s:log_path = ""
+let s:same_root = v:false
 
 if exists("g:kragle_log_path")
-    call KragleLog(g:kragle_log_path)
+    let s:log_path = g:kragle_log_path
+endif
+if exists("g:kragle_same_root")
+    let s:same_root = g:kragle_same_root
 endif
 
-let s:buffer_clean = v:false
 
-function! Swap_Exists()
+
+" Public API
+" """"""""""
+
+
+" Private 
+" """""""
+let s:buffer_clean = v:false
+function! kragle#swapExists()
     echom "Swap file found for " . expand("<afile>") . ", attempting open on other server."
 
     let opened = RemoteOpen(expand("<afile>:p"))
@@ -37,7 +39,7 @@ function! Swap_Exists()
     let v:swapchoice = "a"
 endfunction
 
-function! Buf_Enter()
+function! kragle#bufEnter()
     if s:buffer_clean
         if "" == expand("<afile>")
             return 
@@ -51,8 +53,36 @@ function! Buf_Enter()
     endif
 endfunction
 
+function! kragle#getConfig()
+    return {
+        \"client_root": getcwd(),
+        \"server_name": v:servername,
+        \"log_path": s:log_path,
+        \"same_root": s:same_root,
+        \}
+endfunction
+
+
+" Setup kragle plugin
+" """""""""""""""""""
+function! s:RegisterKragle(host) abort
+    return jobstart([s:kragle_job], {'rpc': v:true})
+endfunction
+
+call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
+
+call remote#host#RegisterPlugin(s:kragle_job, '0', [
+\ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'RemoteOpen', 'sync': 1, 'opts': {}},
+\ ])
+
+call KragleInit(v:servername)
+
+
+" Auto Command bindings
+" """""""""""""""""""""
 augroup Kragle
     autocmd!
-    autocmd BufEnter * call Buf_Enter()
-    autocmd SwapExists * call Swap_Exists()
+    autocmd BufEnter * call kragle#bufEnter()
+    autocmd SwapExists * call kragle#swapExists()
 augroup END

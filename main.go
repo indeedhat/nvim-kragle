@@ -12,7 +12,6 @@ const (
 	PATH_ROOT = "/tmp"
 )
 
-var clientPath string
 var connections = make(map[string]*nvim.Nvim)
 
 func main() {
@@ -25,9 +24,8 @@ func main() {
 			filePath := args[0]
 			client, _ := findSwapOwner(filePath)
 			if nil == client {
-				return "Not found", errors.New("Not found")
+				return "Not found", nil
 			}
-			client.
 
 			err := client.Command(fmt.Sprintf("drop %s", filePath))
 			if nil != err {
@@ -38,20 +36,10 @@ func main() {
 		})
 
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleInit"}, func(args []string) error {
-			if 1 < len(args) {
-				return errors.New("no server name")
-			}
+			readConfigFromClient(p)
+			initLog(config.LogPath)
 
-			clientPath = args[0]
 			return nil
-		})
-
-		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleLog"}, func(args []string) {
-			if 1 <= len(args) {
-				logPath = args[0]
-				logOpen()
-				log(fmt.Sprintf("New Client %s", clientPath))
-			}
 		})
 
 		return nil
@@ -61,6 +49,12 @@ func main() {
 	logClose()
 }
 
+func initLog(path string) {
+	logPath = path
+	logOpen()
+	log(fmt.Sprintf("New Client %s", config.ServerName))
+}
+
 func buffOpen(client *nvim.Nvim, filePath string) (bool, *nvim.Buffer) {
 	buffers, err := client.Buffers()
 	if nil != err {
@@ -68,6 +62,16 @@ func buffOpen(client *nvim.Nvim, filePath string) (bool, *nvim.Buffer) {
 	}
 
 	for _, b := range buffers {
+		// check for same root
+		if config.SameRoot {
+			var result string
+			_ = client.Call("getcwd", &result)
+			log(fmt.Sprintf("same check: %v - %v", result, config.ClientRoot))
+			if 0 < len(result) && result != config.ClientRoot {
+				continue
+			}
+		}
+
 		name, err := client.BufferName(b)
 		log(fmt.Sprintf("Checking %s against %s", name, filePath))
 

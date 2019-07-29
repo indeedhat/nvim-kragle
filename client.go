@@ -38,7 +38,7 @@ func listUnconnectedPaths() []string {
 			continue
 		}
 
-		if fpath == clientPath {
+		if fpath == config.ServerName {
 			continue
 		}
 
