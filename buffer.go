@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/neovim/go-client/nvim"
 )
@@ -47,9 +48,17 @@ func bufferNames(client *nvim.Nvim) []string {
 
 	for _, b := range buffers {
 		name, err := client.BufferName(b)
-		if nil == err {
-			files = append(files, name)
+
+		if nil != err || "" == name {
+			continue
 		}
+
+		// i need to find a better way of ignoring these buffers
+		if strings.HasSuffix(name, "/ControlP") || strings.HasSuffix(name, "NERDTree") {
+			continue
+		}
+
+		files = append(files, name)
 	}
 
 	return files

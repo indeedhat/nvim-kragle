@@ -22,12 +22,12 @@ endif
 " Public API
 " """"""""""
 function kragle#SwitchToBuffer()
-    let a:file_list = GetFileList()
+    let a:file_list = KragleListFiles()
 
-    let a:file_path = s:select("Switch to file", a:file_list)
+    let s:file_path = s:select("Switch to file", a:file_list)
 
-    if "" != a:file_path
-        edit a:file_path
+    if "" != s:file_path
+        execute "e " . fnameescape(s:file_path)
     endif
 endfunction
 
@@ -36,6 +36,10 @@ endfunction
 " """""""
 " of course some of these can all publicly be called in vim private is mearly intention
 function! s:select(message, options)
+    if empty(a:options) || 0 == len(copy(a:options)) 
+        return ""
+    endif
+
     let s:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
     if 1 > s:choice || len(copy(a:options)) < s:choice
         return ""
@@ -49,7 +53,7 @@ let s:buffer_clean = v:false
 function! kragle#swapExists()
     echom "Swap file found for " . expand("<afile>") . ", attempting open on other server."
 
-    let opened = RemoteOpen(expand("<afile>:p"))
+    let opened = KragleRemoteOpen(expand("<afile>:p"))
     if "opened" != opened 
         echom "Could not find remote file"
         return
@@ -93,7 +97,8 @@ call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
 
 call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'RemoteOpen', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleListFiles', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
 \ ])
 
 call KragleInit(v:servername)

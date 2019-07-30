@@ -11,17 +11,23 @@ Vim Plug\
 `Plug 'indeedhat/kragle'`\
 
 ## Options
-`g:kragle_log_path` string\
+`g:kragle_log_path` default ""\
 the core go binary will output to this log file if set
 
-`g:kragle_same_root` bool\
+`g:kragle_same_root` default v:true\
 if set to true then the server will only attempt to open files on vim instances that share the same file root
 as the current instance.\
 Files open in other instances will show the default swap found message
 
+## Public API
+`kragle#SwitchToBuffer()`\
+Pick from a list of buffers open in all connected windows and switch to said file\
+(file will open in whatever window it belongs to)
+
 ## TODO
 - [x] make plugin load prebuilt binary from plugin dir
 - [x] optionally limit the server to interacting with instances using the same working directory
+- [x] switch to currently open file (all windows)
 - [ ] Move current file to remote instance
 - [ ] Move remote file to self
 - [ ] focus remote client when opening a file in it
