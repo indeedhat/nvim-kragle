@@ -22,12 +22,23 @@ endif
 " Public API
 " """"""""""
 function kragle#SwitchToBuffer()
-    let a:file_list = KragleListFiles()
+    let a:file_list = KragleListAllFiles()
 
     let s:file_path = s:select("Switch to file", a:file_list)
 
     if "" != s:file_path
         execute "e " . fnameescape(s:file_path)
+    endif
+endfunction
+
+function kragle#AdoptBuffer()
+    let a:file_list = KragleListRemoteFiles()
+
+    let s:file_path = s:select("Adopt file", a:file_list)
+
+    if "" != s:file_path
+        echo 'Adopting ' . fnameescape(s:file_path)
+        call KragleAdoptBuffer(s:file_path)
     endif
 endfunction
 
@@ -67,11 +78,8 @@ function! kragle#bufEnter()
     if s:buffer_clean
         if "" == expand("<afile>")
             return 
-        else
-            echom expand("<afile>")
         endif
 
-        echom "Cleaning up"
         " execute "bdelete"
         let s:buffer_clean = v:false
     endif
@@ -96,8 +104,10 @@ endfunction
 call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
 
 call remote#host#RegisterPlugin(s:kragle_job, '0', [
+\ {'type': 'function', 'name': 'KragleAdoptBuffer', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleListFiles', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleListAllFiles', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleListRemoteFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
 \ ])
 

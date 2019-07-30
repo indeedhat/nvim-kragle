@@ -58,8 +58,28 @@ func bufferNames(client *nvim.Nvim) []string {
 			continue
 		}
 
+		if is, _ := client.IsBufferLoaded(b); !is {
+			continue
+		}
+
 		files = append(files, name)
 	}
 
 	return files
+}
+
+func bufferFromName(client *nvim.Nvim, bufferName string) *nvim.Buffer {
+	buffers, err := client.Buffers()
+	if nil != err {
+		return nil
+	}
+
+	for _, b := range buffers {
+		name, _ := client.BufferName(b)
+		if bufferName == name {
+			return &b
+		}
+	}
+
+	return nil
 }
