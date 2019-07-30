@@ -8,7 +8,7 @@ let g:loaded_kragle = 1
 " Config variables
 " """"""""""""""""
 let s:log_path = ""
-let s:same_root = v:false
+let s:same_root = v:true
 
 if exists("g:kragle_log_path")
     let s:log_path = g:kragle_log_path
@@ -21,10 +21,30 @@ endif
 
 " Public API
 " """"""""""
+function kragle#SwitchToBuffer()
+    let a:file_list = GetFileList()
+
+    let a:file_path = s:select("Switch to file", a:file_list)
+
+    if "" != a:file_path
+        edit a:file_path
+    endif
+endfunction
 
 
 " Private 
 " """""""
+" of course some of these can all publicly be called in vim private is mearly intention
+function! s:select(message, options)
+    let s:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
+    if 1 > s:choice || len(copy(a:options)) < s:choice
+        return ""
+    endif
+
+    return a:options[s:choice -1]
+endfunction
+
+
 let s:buffer_clean = v:false
 function! kragle#swapExists()
     echom "Swap file found for " . expand("<afile>") . ", attempting open on other server."

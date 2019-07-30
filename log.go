@@ -8,6 +8,12 @@ import (
 var logPath string
 var logFile *os.File
 
+func initLog(path string) {
+	logPath = path
+	logOpen()
+	log(fmt.Sprintf("New Client %s", config.ServerName))
+}
+
 func logOpen() {
 	if "" == logPath {
 		return

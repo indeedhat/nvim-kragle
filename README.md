@@ -22,12 +22,12 @@ Files open in other instances will show the default swap found message
 ## TODO
 - [x] make plugin load prebuilt binary from plugin dir
 - [x] optionally limit the server to interacting with instances using the same working directory
-- [ ] Open a file on a specific window
 - [ ] Move current file to remote instance
 - [ ] Move remote file to self
-- [ ] Test the crap out of it and see if it breaks
 - [ ] focus remote client when opening a file in it
+- [ ] Open a file on a specific window
 - [ ] fuzzy find all open files
+- [ ] Test the crap out of it and see if it breaks
 
 ## Credit
 This was inspired by [codeape2/vim-multiple-monitors](https://github.com/codeape2/vim-multiple-monitors) and some
