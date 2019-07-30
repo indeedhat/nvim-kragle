@@ -24,6 +24,9 @@ Files open in other instances will show the default swap found message
 Pick from a list of buffers open in all connected windows and switch to said file\
 (file will open in whatever window it belongs to)
 
+`kragle#AdoptBuffer()`\
+Pick from a list of buffers open in remote windows and move one of them to the current one
+
 ## TODO
 - [x] make plugin load prebuilt binary from plugin dir
 - [x] optionally limit the server to interacting with instances using the same working directory
