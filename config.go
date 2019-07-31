@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"github.com/neovim/go-client/nvim/plugin"
-	"io/ioutil"
 )
 
 type kragleConfig struct {
@@ -40,12 +38,6 @@ func readConfigFromClient(p *plugin.Plugin) error {
 	if val, ok := res["client_root"]; ok {
 		config.ClientRoot = val.(string)
 	}
-
-	ioutil.WriteFile(
-		"/home/indeedhat/Documents/krag_debug",
-		[]byte(fmt.Sprintf("%v - %v - %v", err, res, config)),
-		0644,
-	)
 
 	return nil
 }

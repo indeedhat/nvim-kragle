@@ -28,6 +28,12 @@ func main() {
 			return kragleListFiles(false)
 		})
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleAdoptBuffer"}, kragleAdoptBuffer)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleListServers"}, kragleListServers)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleOrphanBuffer"}, kragleOrphanBuffer)
+
+		if err := recover(); nil != err {
+			log("Fatal error: %v", err)
+		}
 
 		return nil
 	})
@@ -56,13 +62,13 @@ func kragleRemoteOpen(args []string) (string, error) {
 
 	err := client.Command(fmt.Sprintf("drop %s", filePath))
 	if nil != err {
-		log(fmt.Sprintf("Error opening file %s", err))
+		log("Error opening file %s", err)
 	}
 	err = client.Command("call foreground()")
-	log(fmt.Sprintf("calling foreground %v", err))
+	log("calling foreground %v", err)
 
 	err = client.Call("foreground", nil)
-	log(fmt.Sprintf("calling foreground 2 %v", err))
+	log("calling foreground 2 %v", err)
 
 	return "opened", nil
 }
@@ -81,7 +87,7 @@ func kragleListFiles(includeSelf bool) ([]string, error) {
 		}
 	}
 
-	log(fmt.Sprintf("passing files to client %v", files))
+	log("passing files to client %v", files)
 	return files, nil
 }
 
@@ -103,11 +109,42 @@ func kragleAdoptBuffer(args []string) error {
 		return errors.New("could not find buffer")
 	}
 
-	log(fmt.Sprintf("detaching file %s from parent remote", args[0]))
-	err := client.Command(fmt.Sprintf("bd %d", int(*buffer)))
-	if nil != err {
-		return err
+	return moveBufferToClient(buffer, args[0], client, pluginPtr.Nvim)
+}
+
+func kragleListServers() ([]string, error) {
+	log("gonna list peers")
+	peers := listPeers()
+	log("listed peers")
+	serverNames := make([]string, 0, len(peers))
+
+	for name := range peers {
+		serverNames = append(serverNames, name)
 	}
 
-	return pluginPtr.Nvim.Command(fmt.Sprintf("tabe %s", args[0]))
+	log("Servers: %v", serverNames)
+	return serverNames, nil
+}
+
+func kragleOrphanBuffer(args []string) error {
+	if 2 != len(args) {
+		return errors.New("Invalid input")
+	}
+
+	log("orphan input %v", args)
+	bufferName := args[0]
+	clientName := args[1]
+
+	client, ok := connections[clientName]
+	if !ok {
+		return errors.New("Invalid client name")
+	}
+
+	buffer := bufferFromName(pluginPtr.Nvim, bufferName)
+	if nil == buffer {
+		return errors.New("Invalid buffer name")
+	}
+	log("moving buffer %s", bufferName)
+
+	return moveBufferToClient(buffer, bufferName, pluginPtr.Nvim, client)
 }

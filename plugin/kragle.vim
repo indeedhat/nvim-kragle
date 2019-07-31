@@ -23,32 +23,43 @@ endif
 " """"""""""
 function kragle#SwitchToBuffer()
     let a:file_list = KragleListAllFiles()
+    let s:file_path = s:select("Switch to file", a:file_list, v:false)
 
-    let s:file_path = s:select("Switch to file", a:file_list)
-
-    if "" != s:file_path
-        execute "e " . fnameescape(s:file_path)
+    if "" == s:file_path
+        return 
     endif
+
+    execute "e " . fnameescape(s:file_path)
 endfunction
 
 function kragle#AdoptBuffer()
     let a:file_list = KragleListRemoteFiles()
+    let s:file_path = s:select("Adopt file", a:file_list, v:false)
 
-    let s:file_path = s:select("Adopt file", a:file_list)
-
-    if "" != s:file_path
-        echo 'Adopting ' . fnameescape(s:file_path)
-        call KragleAdoptBuffer(s:file_path)
+    if "" == s:file_path
+        return
     endif
+
+    echo 'Adopting ' . fnameescape(s:file_path)
+    call KragleAdoptBuffer(s:file_path)
 endfunction
 
+function kragle#OrphanBuffer()
+    let a:server_list = KragleListServers()
+    let s:server_path = s:select("Orphan file:", a:server_list, v:true)
+
+    call KragleOrphanBuffer(expand("%:p"), s:server_path)
+endfunction
 
 " Private 
 " """""""
 " of course some of these can all publicly be called in vim private is mearly intention
-function! s:select(message, options)
+function! s:select(message, options, auto_pick)
     if empty(a:options) || 0 == len(copy(a:options)) 
         return ""
+    elseif 1 == len(copy(a:options)) && v:true == a:auto_pick
+        " if there is only one option might as well auto pick it
+        return a:options[0]
     endif
 
     let s:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
@@ -109,6 +120,8 @@ call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleListAllFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListRemoteFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleListServers', 'sync': 1, 'opts': {}},
 \ ])
 
 call KragleInit(v:servername)

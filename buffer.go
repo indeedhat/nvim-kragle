@@ -32,18 +32,13 @@ func bufferBelongsToClient(client *nvim.Nvim, filePath string) bool {
 
 func bufferNames(client *nvim.Nvim) []string {
 	var files []string
-	buffers, err := client.Buffers()
-	if nil != err {
+	if !clientIsPeer(client) {
 		return files
 	}
 
-	if config.SameRoot {
-		var result string
-		_ = client.Call("getcwd", &result)
-		log(fmt.Sprintf("same check: %v - %v", result, config.ClientRoot))
-		if 0 < len(result) && result != config.ClientRoot {
-			return files
-		}
+	buffers, err := client.Buffers()
+	if nil != err {
+		return files
 	}
 
 	for _, b := range buffers {
@@ -54,6 +49,8 @@ func bufferNames(client *nvim.Nvim) []string {
 		}
 
 		// i need to find a better way of ignoring these buffers
+		// TODO: find out if this is necesarry not or if the IsBufferLoaded thing sorts it
+		//       i suspect it might cover ctrlP but not nerdtree
 		if strings.HasSuffix(name, "/ControlP") || strings.HasSuffix(name, "NERDTree") {
 			continue
 		}
@@ -82,4 +79,14 @@ func bufferFromName(client *nvim.Nvim, bufferName string) *nvim.Buffer {
 	}
 
 	return nil
+}
+
+func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) error {
+	log("detaching file %s from parent", bufName)
+	err := from.Command(fmt.Sprintf("bd %d", int(*buf)))
+	if nil != err {
+		return err
+	}
+
+	return to.Command(fmt.Sprintf("tabe %s", bufName))
 }

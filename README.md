@@ -32,7 +32,8 @@ Pick from a list of buffers open in remote windows and move one of them to the c
 - [x] optionally limit the server to interacting with instances using the same working directory
 - [x] switch to currently open file (all windows)
 - [x] Adopt a file from a remote into the local (close it there and open it here)
-- [ ] Move current file to remote instance
+- [x] Move current file to remote instance
+- [ ] make work with quick fix lists (:cn)
 - [ ] focus remote client when opening a file in it
 - [ ] Open a file on a specific window
 - [ ] fuzzy find all open files

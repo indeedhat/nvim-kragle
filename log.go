@@ -11,7 +11,7 @@ var logFile *os.File
 func initLog(path string) {
 	logPath = path
 	logOpen()
-	log(fmt.Sprintf("New Client %s", config.ServerName))
+	log("New Client %s", config.ServerName)
 }
 
 func logOpen() {
@@ -34,6 +34,6 @@ func logClose() {
 	logFile.Close()
 }
 
-func log(message string) {
-	logFile.WriteString(fmt.Sprintln(message))
+func log(message string, args ...interface{}) {
+	logFile.WriteString(fmt.Sprintf(message, args...) + "\n")
 }

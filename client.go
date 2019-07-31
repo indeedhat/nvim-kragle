@@ -12,7 +12,7 @@ import (
 func connect(nvimPath string) (*nvim.Nvim, error) {
 	client, err := nvim.Dial(nvimPath)
 	if nil != err {
-		log(fmt.Sprintf("Failed to connect to %s", nvimPath))
+		log("Failed to connect to %s", nvimPath)
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func listUnconnectedPaths() []string {
 		paths = append(paths, fpath)
 	}
 
-	log(fmt.Sprintf("Unconnected instances %v", paths))
+	log("Unconnected instances %v", paths)
 	return paths
 }
 
@@ -53,4 +53,31 @@ func connectAll() {
 	for _, path := range listUnconnectedPaths() {
 		connect(path)
 	}
+}
+
+func clientIsPeer(client *nvim.Nvim) bool {
+	if config.SameRoot {
+		var result string
+		_ = client.Call("getcwd", &result)
+		log("same check: %v - %v", result, config.ClientRoot)
+		return 0 < len(result) && result == config.ClientRoot
+	}
+
+	return true
+}
+
+func listPeers() map[string]*nvim.Nvim {
+	connectAll()
+
+	peers := make(map[string]*nvim.Nvim)
+
+	for serverName, client := range connections {
+		if !clientIsPeer(client) {
+			continue
+		}
+
+		peers[serverName] = client
+	}
+
+	return peers
 }
