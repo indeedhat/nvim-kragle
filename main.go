@@ -8,10 +8,6 @@ import (
 	"github.com/neovim/go-client/nvim/plugin"
 )
 
-const (
-	PATH_ROOT = "/tmp"
-)
-
 var connections = make(map[string]*nvim.Nvim)
 var pluginPtr *plugin.Plugin
 

@@ -1,10 +1,14 @@
 package main
 
 import (
+	"os"
+	"strings"
+
 	"github.com/neovim/go-client/nvim/plugin"
 )
 
 type kragleConfig struct {
+	ServerRoot string
 	ServerName string
 	LogPath    string
 	SameRoot   bool
@@ -25,6 +29,12 @@ func readConfigFromClient(p *plugin.Plugin) error {
 
 	if val, ok := res["server_name"]; ok {
 		config.ServerName = val.(string)
+
+		parts := strings.Split(config.ServerName, string(os.PathSeparator))
+		if 3 <= len(parts) {
+			parts = parts[:len(parts)-2]
+			config.ServerRoot = strings.Join(parts, string(os.PathSeparator))
+		}
 	}
 
 	if val, ok := res["log_path"]; ok {

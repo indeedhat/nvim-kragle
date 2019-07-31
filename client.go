@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path"
 	"strings"
@@ -23,7 +22,7 @@ func connect(nvimPath string) (*nvim.Nvim, error) {
 func listUnconnectedPaths() []string {
 	var paths []string
 
-	files, err := ioutil.ReadDir(PATH_ROOT)
+	files, err := ioutil.ReadDir(config.ServerRoot)
 	if nil != err {
 		return paths
 	}
@@ -33,7 +32,7 @@ func listUnconnectedPaths() []string {
 			continue
 		}
 
-		fpath := path.Join(PATH_ROOT, f.Name(), "0")
+		fpath := path.Join(config.ServerRoot, f.Name(), "0")
 		if _, ok := connections[fpath]; ok {
 			continue
 		}
