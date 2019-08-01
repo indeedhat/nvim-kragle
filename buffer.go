@@ -88,7 +88,7 @@ func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) e
 		return err
 	}
 
-	err := to.Command(fmt.Sprintf("tabe %s", bufName))
+	err = to.Command(fmt.Sprintf("tabe %s", bufName))
 	log("opening in new parent %v", err)
 
 	return err
