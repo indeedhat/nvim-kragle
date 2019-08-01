@@ -6,15 +6,23 @@ This has only been tested on Fedora 29 using neovim 0.3.8\
 I can think of no reason why this would not work on other linux distributions although it is as of
 yet untested.
 
-As for windows/osx it is totally untested as i dont use osx for development and currently dont run windows at all
+As for windows it is totally untested as i currently dont run windows at all
 
-The binary is prebuilt and included in the repo so should not need go to be installed on the machine to work
+The binary is prebuilt and included in the repo so should not need go to be installed on the machine to work (linux only)
 
 ** This is a neovim plugin and has no support for vanilla vim **
 
 ## Installation
+It can of course be installed with your package manager of choice, mine is Plug
 Vim Plug\
-`Plug 'indeedhat/kragle'`\
+`Plug 'indeedhat/kragle'`
+
+### Aditional steps for osx
+The binary shipped in this repo is built for linux and will not work on osx.\
+To get kragle working on osx you will need to have go >= 1.11 installed 
+    - cd into the kragle location, on with Plug this is ~/.vim/plugged/nvim-kragle
+    - rebuild `go build .`
+
 
 ## Options
 `g:kragle_log_path` default ""\
