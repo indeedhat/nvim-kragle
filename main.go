@@ -26,6 +26,7 @@ func main() {
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleAdoptBuffer"}, kragleAdoptBuffer)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleListServers"}, kragleListServers)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleOrphanBuffer"}, kragleOrphanBuffer)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleCommandAll"}, kragleCommandAll)
 
 		if err := recover(); nil != err {
 			log("Fatal error: %v", err)
@@ -143,4 +144,17 @@ func kragleOrphanBuffer(args []string) error {
 	log("moving buffer %s", bufferName)
 
 	return moveBufferToClient(buffer, bufferName, pluginPtr.Nvim, client)
+}
+
+func kragleCommandAll(args []string) error {
+	if 1 < len(args) {
+		return errors.New("No command sent")
+	}
+
+	for _, client := range listPeers() {
+		client.Command(args[0])
+	}
+
+	pluginPtr.Nvim.Command(args[0])
+	return nil
 }

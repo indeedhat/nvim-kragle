@@ -21,6 +21,21 @@ endif
 
 " Public API
 " """"""""""
+function kragle#Quit(save, force)
+    let a:command = ""
+    if v:true == a:save
+        let a:command .= "w"
+    endif
+
+    let a:command .= "qa"
+
+    if v:true == a:force 
+        let a:command .= "!"
+    endif
+
+    call KragleCommandAll(a:command)
+endfunction
+
 function kragle#SwitchToBuffer()
     let a:file_list = KragleListAllFiles()
     let s:file_path = s:select("Switch to file", a:file_list, v:false)
@@ -122,6 +137,7 @@ call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListServers', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleCommandAll', 'sync': 1, 'opts': {}},
 \ ])
 
 call KragleInit(v:servername)
