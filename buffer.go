@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path"
 	"strings"
 
 	"github.com/neovim/go-client/nvim"
@@ -51,7 +52,8 @@ func bufferNames(client *nvim.Nvim) []string {
 		// i need to find a better way of ignoring these buffers
 		// TODO: find out if this is necesarry not or if the IsBufferLoaded thing sorts it
 		//       i suspect it might cover ctrlP but not nerdtree
-		if strings.HasSuffix(name, "/ControlP") || strings.HasSuffix(name, "NERD_tree") {
+		_, fileName := path.Split(name)
+		if "CtonrolP" == fileName || strings.HasPrefix(fileName, "NERD_tree") {
 			continue
 		}
 
