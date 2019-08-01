@@ -15,6 +15,7 @@ func main() {
 	plugin.Main(func(p *plugin.Plugin) error {
 		pluginPtr = p
 
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteFocus"}, kragleRemoteFocus)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteOpen"}, kragleRemoteOpen)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleInit"}, kragleInit)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleListAllFiles"}, func() ([]string, error) {
@@ -46,7 +47,7 @@ func kragleInit(args []string) error {
 	return nil
 }
 
-func kragleRemoteOpen(args []string) (string, error) {
+func kragleRemoteFocus(args []string) (string, error) {
 	if 1 < len(args) {
 		return fmt.Sprintf("No Path Given %v", args), errors.New(fmt.Sprintf("No Path Given %v", args))
 	}
@@ -63,9 +64,6 @@ func kragleRemoteOpen(args []string) (string, error) {
 	}
 	err = client.Command("call foreground()")
 	log("calling foreground %v", err)
-
-	err = client.Call("foreground", nil)
-	log("calling foreground 2 %v", err)
 
 	return "opened", nil
 }
@@ -157,4 +155,12 @@ func kragleCommandAll(args []string) error {
 
 	pluginPtr.Nvim.Command(args[0])
 	return nil
+}
+
+func kragleRemoteOpen(args []string) error {
+	if 2 < len(args) {
+		return errors.New("Invalid input")
+	}
+
+	return openBufferOnClient(args[0], args[1])
 }

@@ -9,6 +9,7 @@ let g:loaded_kragle = 1
 " """"""""""""""""
 let s:log_path = ""
 let s:same_root = v:true
+let s:use_tabs = v:true
 
 if exists("g:kragle_log_path")
     let s:log_path = g:kragle_log_path
@@ -16,11 +17,21 @@ endif
 if exists("g:kragle_same_root")
     let s:same_root = g:kragle_same_root
 endif
+if exists("g:kragle_use_tabs")
+    let s:use_tabs = g:kragle_use_tabs
+endif
 
 
 
 " Public API
 " """"""""""
+function kragle#OpenOnRemote(file)
+    let a:server_list = KragleListServers()
+    let s:server_path = s:select("Remote Client:", a:server_list, v:true)
+
+    call KragleRemoteOpen(a:file, s:server_path)
+endfunction
+
 function kragle#Quit(save, force)
     let a:command = ""
     if v:true == a:save
@@ -90,7 +101,7 @@ let s:buffer_clean = v:false
 function! kragle#swapExists()
     echom "Swap file found for " . expand("<afile>") . ", attempting open on other server."
 
-    let opened = KragleRemoteOpen(expand("<afile>:p"))
+    let opened = KragleRemoteFocus(expand("<afile>:p"))
     if "opened" != opened 
         echom "Could not find remote file"
         return
@@ -117,6 +128,7 @@ function! kragle#getConfig()
         \"server_name": v:servername,
         \"log_path": s:log_path,
         \"same_root": s:same_root,
+        \"use_tabs": s:use_tabs,
         \}
 endfunction
 
@@ -135,6 +147,7 @@ call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleListAllFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListRemoteFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleRemoteFocus', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListServers', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleCommandAll', 'sync': 1, 'opts': {}},

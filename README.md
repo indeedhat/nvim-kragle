@@ -33,6 +33,9 @@ if set to true then the server will only attempt to open files on vim instances 
 as the current instance.\
 Files open in other instances will show the default swap found message
 
+`g:kragle_use_tabs` defualt v:true\
+when moving files between clients or opening on a remote should tabe be used over e
+
 ## Public API
 `kragle#SwitchToBuffer()`\
 Pick from a list of buffers open in all connected windows and switch to said file\
@@ -50,7 +53,12 @@ Quit all connected clients (including self)\
 save: bool (save all files before quitting `:wqa`)\
 force: bool (force the quit, ignore errors etc `:qa!`)
 
-## TODO
+`kragle#OpenOnRemote(path)`\
+Open a buffer by path on a remote client.\
+If more than one remote client exists it will ask for a choice\
+path: string (the full path of the file to be opened)
+
+## RoadMap
 - [x] make plugin load prebuilt binary from plugin dir
 - [x] optionally limit the server to interacting with instances using the same working directory
 - [x] switch to currently open file (all windows)

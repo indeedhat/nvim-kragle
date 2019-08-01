@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"path"
 	"strings"
@@ -90,8 +91,18 @@ func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) e
 		return err
 	}
 
-	err = to.Command(fmt.Sprintf("tabe %s", bufName))
+	err = to.Command(fmt.Sprintf("%s %s", config.OpenCommand, bufName))
 	log("opening in new parent %v", err)
 
 	return err
+}
+
+func openBufferOnClient(bufferName, clientName string) error {
+	connectAll()
+	client := connections[clientName]
+	if nil == client {
+		return errors.New("Bad client name")
+	}
+
+	return client.Command(fmt.Sprintf("%s %s", config.OpenCommand, bufferName))
 }

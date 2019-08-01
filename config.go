@@ -8,17 +8,21 @@ import (
 )
 
 type kragleConfig struct {
-	ServerRoot string
-	ServerName string
-	LogPath    string
-	SameRoot   bool
-	ClientRoot string
+	ServerRoot  string
+	ServerName  string
+	LogPath     string
+	SameRoot    bool
+	ClientRoot  string
+	UseTabs     bool
+	OpenCommand string
 }
 
 var config kragleConfig
 
 func readConfigFromClient(p *plugin.Plugin) error {
-	config = kragleConfig{}
+	config = kragleConfig{
+		OpenCommand: "e",
+	}
 
 	res := make(map[string]interface{})
 	err := p.Nvim.Call("kragle#getConfig", &res)
@@ -47,6 +51,11 @@ func readConfigFromClient(p *plugin.Plugin) error {
 
 	if val, ok := res["client_root"]; ok {
 		config.ClientRoot = val.(string)
+	}
+
+	if val, ok := res["use_tabs"]; ok {
+		config.UseTabs = val.(bool)
+		config.OpenCommand = "tabe"
 	}
 
 	return nil
