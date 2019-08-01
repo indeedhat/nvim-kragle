@@ -51,7 +51,7 @@ func bufferNames(client *nvim.Nvim) []string {
 		// i need to find a better way of ignoring these buffers
 		// TODO: find out if this is necesarry not or if the IsBufferLoaded thing sorts it
 		//       i suspect it might cover ctrlP but not nerdtree
-		if strings.HasSuffix(name, "/ControlP") || strings.HasSuffix(name, "NERDTree") {
+		if strings.HasSuffix(name, "/ControlP") || strings.HasSuffix(name, "NERD_tree") {
 			continue
 		}
 
@@ -88,5 +88,8 @@ func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) e
 		return err
 	}
 
-	return to.Command(fmt.Sprintf("tabe %s", bufName))
+	err := to.Command(fmt.Sprintf("tabe %s", bufName))
+	log("opening in new parent %v", err)
+
+	return err
 }
