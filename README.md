@@ -51,6 +51,7 @@ If only one remote buffer is open it will auto move it otherwise you will be ask
 - [x] switch to currently open file (all windows)
 - [x] Adopt a file from a remote into the local (close it there and open it here)
 - [x] Move current file to remote instance
+- [ ] Close all instances (:qa)
 - [ ] Try and find a better way to name buffers
 - [ ] make work with quick fix lists (:cn)
 - [ ] focus remote client when opening a file in it
