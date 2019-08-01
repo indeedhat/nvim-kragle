@@ -45,13 +45,18 @@ Pick from a list of buffers open in remote windows and move one of them to the c
 Move a buffer from the current instance to a remote one\
 If only one remote buffer is open it will auto move it otherwise you will be asked to chose
 
+`kragle#Quit(save, force)` (`:qa`)\
+Quit all connected clients (including self)\
+save: bool (save all files before quitting `:wqa`)\
+force: bool (force the quit, ignore errors etc `:qa!`)
+
 ## TODO
 - [x] make plugin load prebuilt binary from plugin dir
 - [x] optionally limit the server to interacting with instances using the same working directory
 - [x] switch to currently open file (all windows)
 - [x] Adopt a file from a remote into the local (close it there and open it here)
 - [x] Move current file to remote instance
-- [ ] Close all instances (:qa)
+- [x] Close all instances (:qa)
 - [ ] Try and find a better way to name buffers
 - [ ] make work with quick fix lists (:cn)
 - [ ] focus remote client when opening a file in it
