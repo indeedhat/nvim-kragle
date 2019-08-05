@@ -16,6 +16,7 @@ func main() {
 		pluginPtr = p
 
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteFocus"}, kragleRemoteFocus)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteFocusBuffer"}, kragleRemoteFocusBuffer)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteOpen"}, kragleRemoteOpen)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleInit"}, kragleInit)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleListAllFiles"}, func() ([]string, error) {
@@ -47,7 +48,23 @@ func kragleInit(args []string) error {
 	return nil
 }
 
-func kragleRemoteFocus(args []string) (string, error) {
+func kragleRemoteFocus(args []string) error {
+	if 1 < len(args) {
+		return errors.New(fmt.Sprintf("No Server name Given %v", args))
+	}
+
+	serverName := args[0]
+
+	connectAll()
+	client, ok := connections[serverName]
+	if !ok {
+		return errors.New("Invalid client name")
+	}
+
+	return client.Command("call kragle#focus()")
+}
+
+func kragleRemoteFocusBuffer(args []string) (string, error) {
 	if 1 < len(args) {
 		return fmt.Sprintf("No Path Given %v", args), errors.New(fmt.Sprintf("No Path Given %v", args))
 	}
@@ -130,6 +147,7 @@ func kragleOrphanBuffer(args []string) error {
 	bufferName := args[0]
 	clientName := args[1]
 
+	connectAll()
 	client, ok := connections[clientName]
 	if !ok {
 		return errors.New("Invalid client name")

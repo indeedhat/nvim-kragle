@@ -58,6 +58,10 @@ Quit all connected clients (including self)\
 save: bool (save all files before quitting `:wqa`)\
 force: bool (force the quit, ignore errors etc `:qa!`)
 
+`kragle#FocusRemote()`\
+Switch window focus to a remote instance.\
+This will auto focus if there is only one remote instance otherwise it will prompt for selection
+
 `kragle#OpenOnRemote(path)`\
 Open a buffer by path on a remote client.\
 If more than one remote client exists it will ask for a choice\
