@@ -13,13 +13,12 @@ The binary is prebuilt and included in the repo so should not need go to be inst
 There is currently no support for windows as i dont currently run it but i will add support if it is requested
 
 `xdotool` is required for focusing the remote instance when opening/moving buffers to it.\
-if xdtool is not installed on the system it will fallback to calling foreground() however i havnt had
+if xdotool is not installed on the system it will fallback to calling foreground() however i havnt had
 any luck with that function actually working on osx or with i3wm. It may work better on a more
-traditional window manager in linux but i havnt tested it.
+traditional window manager in linux but i haven't tested it.
 
 ## Installation
-It can of course be installed with your package manager of choice, mine is Plug
-Vim Plug\
+It can of course be installed with your package manager of choice, mine is Plug\
 `Plug 'indeedhat/kragle'`
 
 ### Aditional steps for osx
