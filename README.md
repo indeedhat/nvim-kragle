@@ -25,8 +25,8 @@ Vim Plug\
 ### Aditional steps for osx
 The binary shipped in this repo is built for linux and will not work on osx.\
 To get kragle working on osx you will need to have go >= 1.11 installed 
-    - cd into the kragle location, on with Plug this is ~/.vim/plugged/nvim-kragle
-    - rebuild `go build .`
+- cd into the kragle location, on with Plug this is `~/.vim/plugged/nvim-kragle`
+- rebuild `go build .`
 
 
 ## Options
