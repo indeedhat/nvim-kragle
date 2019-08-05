@@ -10,6 +10,7 @@ let g:loaded_kragle = 1
 let s:log_path = ""
 let s:same_root = v:true
 let s:use_tabs = v:true
+let s:window_id = ""
 
 if exists("g:kragle_log_path")
     let s:log_path = g:kragle_log_path
@@ -132,6 +133,24 @@ function! kragle#getConfig()
         \}
 endfunction
 
+function! kragle#focus()
+    if "" != s:window_id
+        call system("xdotool windowfocus " . s:window_id)
+    else
+        call foreground()
+    endif
+endfunction
+
+function s:init()
+    " initialize the go plugin
+    call KragleInit(v:servername)
+
+    " attempt to get the window id for later use with focus
+    if executable("xdotool")
+        let s:window_id = system("xdotool getactivewindow")
+    endif
+endfunction
+
 
 " Setup kragle plugin
 " """""""""""""""""""
@@ -153,7 +172,7 @@ call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \ {'type': 'function', 'name': 'KragleCommandAll', 'sync': 1, 'opts': {}},
 \ ])
 
-call KragleInit(v:servername)
+call s:init()
 
 
 " Auto Command bindings

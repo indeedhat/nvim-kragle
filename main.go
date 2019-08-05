@@ -62,7 +62,7 @@ func kragleRemoteFocus(args []string) (string, error) {
 	if nil != err {
 		log("Error opening file %s", err)
 	}
-	err = client.Command("call foreground()")
+	err = client.Command("call kragle#focus()")
 	log("calling foreground %v", err)
 
 	return "opened", nil

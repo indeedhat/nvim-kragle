@@ -93,6 +93,12 @@ func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) e
 
 	err = to.Command(fmt.Sprintf("%s %s", config.OpenCommand, bufName))
 	log("opening in new parent %v", err)
+	if nil != err {
+		return err
+	}
+
+	err = to.Command("call kragle#focus()")
+	log("calling foreground %v", err)
 
 	return err
 }
@@ -104,5 +110,13 @@ func openBufferOnClient(bufferName, clientName string) error {
 		return errors.New("Bad client name")
 	}
 
-	return client.Command(fmt.Sprintf("%s %s", config.OpenCommand, bufferName))
+	err := client.Command(fmt.Sprintf("%s %s", config.OpenCommand, bufferName))
+	if nil != err {
+		return err
+	}
+
+	err = client.Command("call kragle#focus()")
+	log("calling foreground %v", err)
+
+	return err
 }

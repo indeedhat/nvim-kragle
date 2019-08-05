@@ -12,6 +12,11 @@ The binary is prebuilt and included in the repo so should not need go to be inst
 
 ** This is a neovim plugin and has no support for vanilla vim **
 
+`xdotool` is required for focusing the remote instance when opening/moving buffers to it.\
+if xdtool is not installed on the system it will fallback to calling foreground() however i havnt had
+any luck with that function actually working on osx or with i3wm. It may work better on a more
+traditional window manager in linux but i havnt tested it.
+
 ## Installation
 It can of course be installed with your package manager of choice, mine is Plug
 Vim Plug\
@@ -65,11 +70,11 @@ path: string (the full path of the file to be opened)
 - [x] Adopt a file from a remote into the local (close it there and open it here)
 - [x] Move current file to remote instance
 - [x] Close all instances (:qa)
-- [ ] Try and find a better way to name buffers
+- [ ] Try and find a better way to name servers
 - [ ] make work with quick fix lists (:cn)
-- [ ] focus remote client when opening a file in it
-- [ ] Open a file on a specific window
-- [ ] fuzzy find all open files
+- [x] focus remote client when opening a file in it (requires xdotool)
+- [x] Open a file on a specific window
+- [ ] fuzzy find all open files (possibly look into intergrating remote open into ctrlP or NERDTree)
 - [ ] Write some vader tests (i think for the most part the go is untestable)
 - [ ] Improve the documentation
 
