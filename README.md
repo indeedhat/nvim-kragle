@@ -55,8 +55,8 @@ If only one remote buffer is open it will auto move it otherwise you will be ask
 
 `kragle#Quit(save, force)` (`:qa`)\
 Quit all connected clients (including self)\
-save: bool (save all files before quitting `:wqa`)\
-force: bool (force the quit, ignore errors etc `:qa!`)
+**save**: bool (save all files before quitting `:wqa`)\
+**force**: bool (force the quit, ignore errors etc `:qa!`)
 
 `kragle#FocusRemote()`\
 Switch window focus to a remote instance.\
@@ -65,7 +65,7 @@ This will auto focus if there is only one remote instance otherwise it will prom
 `kragle#OpenOnRemote(path)`\
 Open a buffer by path on a remote client.\
 If more than one remote client exists it will ask for a choice\
-path: string (the full path of the file to be opened)
+**path**: string (the full path of the file to be opened)
 
 ## My Bindings
 ```vim
