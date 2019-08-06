@@ -20,7 +20,7 @@ traditional window manager in linux but i haven't tested it.
 ## Installation
 It can of course be installed with your package manager of choice, mine is Plug
 Vim Plug\
-`Plug 'indeedhat/kragle' { 'do': 'install.sh' }`
+`Plug 'indeedhat/nvim-kragle', { 'do': './install.sh' }`
 
 The install.sh script will setup the environment for your environment provided it is supported
 
