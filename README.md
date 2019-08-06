@@ -1,5 +1,5 @@
 # Kragle
-multiple instances of neovim held together with krazy glue
+> multiple instances of neovim held together with krazy glue
 
 ## Platform Requirements
 This has only been tested on Fedora 29 using neovim 0.3.8\
@@ -20,14 +20,9 @@ traditional window manager in linux but i havnt tested it.
 ## Installation
 It can of course be installed with your package manager of choice, mine is Plug
 Vim Plug\
-`Plug 'indeedhat/kragle'`
+`Plug 'indeedhat/kragle' { 'do': 'install.sh' }`
 
-### Aditional steps for osx
-The binary shipped in this repo is built for linux and will not work on osx.\
-To get kragle working on osx you will need to have go >= 1.11 installed 
-    - cd into the kragle location, on with Plug this is ~/.vim/plugged/nvim-kragle
-    - rebuild `go build .`
-
+The install.sh script will setup the environment for your environment provided it is supported
 
 ## Options
 `g:kragle_log_path` default ""\
