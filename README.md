@@ -6,16 +6,16 @@ This has only been tested on Fedora 29 using neovim 0.3.8\
 I can think of no reason why this would not work on other linux distributions although it is as of
 yet untested.
 
-As for windows it is totally untested as i currently dont run windows at all
-
 The binary is prebuilt and included in the repo so should not need go to be installed on the machine to work (linux only)
 
-** This is a neovim plugin and has no support for vanilla vim **
+**This is a neovim plugin and has no support for vanilla vim**
+
+There is currently no support for windows as i dont currently run it but i will add support if it is requested
 
 `xdotool` is required for focusing the remote instance when opening/moving buffers to it.\
-if xdtool is not installed on the system it will fallback to calling foreground() however i havnt had
+if xdotool is not installed on the system it will fallback to calling foreground() however i havnt had
 any luck with that function actually working on osx or with i3wm. It may work better on a more
-traditional window manager in linux but i havnt tested it.
+traditional window manager in linux but i haven't tested it.
 
 ## Installation
 It can of course be installed with your package manager of choice, mine is Plug
@@ -50,8 +50,8 @@ If only one remote buffer is open it will auto move it otherwise you will be ask
 
 `kragle#Quit(save, force)` (`:qa`)\
 Quit all connected clients (including self)\
-save: bool (save all files before quitting `:wqa`)\
-force: bool (force the quit, ignore errors etc `:qa!`)
+**save**: bool (save all files before quitting `:wqa`)\
+**force**: bool (force the quit, ignore errors etc `:qa!`)
 
 `kragle#FocusRemote()`\
 Switch window focus to a remote instance.\
@@ -60,7 +60,28 @@ This will auto focus if there is only one remote instance otherwise it will prom
 `kragle#OpenOnRemote(path)`\
 Open a buffer by path on a remote client.\
 If more than one remote client exists it will ask for a choice\
-path: string (the full path of the file to be opened)
+**path**: string (the full path of the file to be opened)
+
+## My Bindings
+```vim
+" adopt a buffer from a remote terminal
+noremap <Leader>ka :call kragle#AdoptBuffer()<CR>
+
+"move current buffer to a remote terminal
+noremap <Leader>ko :call kragle#OrphanBuffer()<CR>
+
+" Quit all connected terminals
+noremap <Leader>kq :call kragle#Quit(v:false, v:false)<CR>
+
+" Save and force quit all connected terminals
+noremap <Leader>kQ :call kragle#Quit(v:true, v:true)<CR>
+
+" Focus a remote terminal
+noremap <Leader>kf :call kragle#FocusRemote()<CR>
+
+" Select and switch to an open buffer (all connected terminals)
+noremap <Leader>kl :call kragle#SwitchToBuffer()<CR>
+```
 
 ## RoadMap
 - [x] make plugin load prebuilt binary from plugin dir
