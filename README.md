@@ -29,9 +29,8 @@ The install.sh script will setup the environment for your environment provided i
 the core go binary will output to this log file if set
 
 `g:kragle_same_root` default v:true\
-if set to true then the server will only attempt to open files on vim instances that share the same file root
+if set to true then the server will only interact vim instances that share the same file root
 as the current instance.\
-Files open in other instances will show the default swap found message
 
 `g:kragle_use_tabs` defualt v:true\
 when moving files between clients or opening on a remote should tabe be used over e
