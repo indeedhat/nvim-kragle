@@ -15,9 +15,12 @@ func main() {
 	plugin.Main(func(p *plugin.Plugin) error {
 		pluginPtr = p
 
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleLog"}, kragleLog)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleQuickFix"}, kragleQuickFix)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteFocus"}, kragleRemoteFocus)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteFocusBuffer"}, kragleRemoteFocusBuffer)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteOpen"}, kragleRemoteOpen)
+		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleRemoteClose"}, kragleRemoteClose)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleInit"}, kragleInit)
 		p.HandleFunction(&plugin.FunctionOptions{Name: "KragleListAllFiles"}, func() ([]string, error) {
 			return kragleListFiles(true)
@@ -175,10 +178,32 @@ func kragleCommandAll(args []string) error {
 	return nil
 }
 
+func kragleRemoteClose(args []string) error {
+	if 1 < len(args) {
+		return errors.New("Invalid input")
+	}
+
+	return closeBuffer(args[0])
+}
+
 func kragleRemoteOpen(args []string) error {
 	if 2 < len(args) {
 		return errors.New("Invalid input")
 	}
 
 	return openBufferOnClient(args[0], args[1])
+}
+
+func kragleLog(args []interface{}) error {
+	log("kraggleLog %v", args)
+	return nil
+}
+
+func kragleQuickFix(args []string) error {
+	if 1 < len(args) {
+		return errors.New("invalid input")
+	}
+
+	log("gonna run command: %s", fmt.Sprintf("setqflist(%s)", args[0]))
+	return kragleCommandAll([]string{fmt.Sprintf("setqflist(%s)", args[0])})
 }

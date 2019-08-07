@@ -35,6 +35,7 @@ function kragle#FocusRemote()
     endif
 endfunction
 
+
 function kragle#OpenOnRemote(file)
     let a:server_list = KragleListServers()
     let s:server_path = s:select("Remote Client:", a:server_list, v:true)
@@ -110,6 +111,14 @@ function! s:select(message, options, auto_pick)
     return a:options[s:choice -1]
 endfunction
 
+function! kragle#log(...)
+    call KragleLog(a:000)
+endfunction
+
+function! kragle#quickFix(dict)
+    call KragleQuickFix(a:dict)
+endfunction
+
 
 let s:buffer_clean = v:false
 function! kragle#swapExists()
@@ -154,6 +163,10 @@ function! kragle#focus()
     endif
 endfunction
 
+function kragle#closeOnRemote(file)
+    call KragleRemoteClose(a:file)
+endfunction 
+
 function s:init()
     " initialize the go plugin
     call KragleInit(v:servername)
@@ -174,16 +187,19 @@ endfunction
 call remote#host#Register(s:kragle_job, 'x', function('s:RegisterKragle'))
 
 call remote#host#RegisterPlugin(s:kragle_job, '0', [
+\ {'type': 'function', 'name': 'KragleLog', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleQuickFix', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleAdoptBuffer', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleCommandAll', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListAllFiles', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleListRemoteFiles', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleListServers', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleRemoteClose', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleRemoteFocus', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'KragleRemoteFocusBuffer', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleListServers', 'sync': 1, 'opts': {}},
-\ {'type': 'function', 'name': 'KragleCommandAll', 'sync': 1, 'opts': {}},
+\ {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
 \ ])
 
 call s:init()

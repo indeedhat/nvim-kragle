@@ -13,7 +13,7 @@ The binary is prebuilt and included in the repo so should not need go to be inst
 There is currently no support for windows as i dont currently run it but i will add support if it is requested
 
 `xdotool` is required for focusing the remote instance when opening/moving buffers to it.\
-if xdotool is not installed on the system it will fallback to calling foreground() however i havnt had
+if xdotool is not i:stalled on the system it will fallback to calling foreground() however i havnt had
 any luck with that function actually working on osx or with i3wm. It may work better on a more
 traditional window manager in linux but i haven't tested it.
 
@@ -96,6 +96,10 @@ noremap <Leader>kl :call kragle#SwitchToBuffer()<CR>
 - [ ] fuzzy find all open files (possibly look into intergrating remote open into ctrlP or NERDTree)
 - [ ] Write some vader tests (i think for the most part the go is untestable)
 - [ ] Improve the documentation
+
+## Known issues
+- It does not play nice with quick fix lists when trying to switch to a file on a remote terminal. You get get stuck on that entry and :cn will just repeatedly try to swicth to said buffer
+- Renaming/removing files open in a remote terminal does not work
 
 ## Credit
 This was inspired by [codeape2/vim-multiple-monitors](https://github.com/codeape2/vim-multiple-monitors) and some

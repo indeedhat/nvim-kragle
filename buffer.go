@@ -120,3 +120,21 @@ func openBufferOnClient(bufferName, clientName string) error {
 
 	return err
 }
+
+func closeBuffer(bufferName string) error {
+	connectAll()
+
+	client := findSwapOwner(bufferName)
+	if nil == client {
+		return errors.New("Could not locate buffers client")
+	}
+
+	buffer := bufferFromName(client, bufferName)
+	if nil == buffer {
+		return errors.New("Failed to locate buffer on client")
+	}
+
+	err := client.Command(fmt.Sprintf("bd %d", int(*buffer)))
+
+	return err
+}
