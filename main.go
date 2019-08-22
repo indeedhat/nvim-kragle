@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/neovim/go-client/nvim"
 	"github.com/neovim/go-client/nvim/plugin"
 )
 
@@ -60,7 +59,7 @@ func kragleRemoteFocus(args []string) error {
 		return errors.New("Invalid client name")
 	}
 
-	return client.Command("call kragle#focus()")
+	return focusClient(client)
 }
 
 func kragleRemoteFocusBuffer(args []string) (string, error) {
@@ -166,10 +165,12 @@ func kragleCommandAll(args []string) error {
 		return errors.New("No command sent")
 	}
 
-	for _, client := range listPeers() {
+	for nvimPath, client := range listPeers() {
+		kragleRemoteFocus([]string{nvimPath})
 		client.Command(args[0])
 	}
 
+	focusClient(pluginPtr.Nvim)
 	pluginPtr.Nvim.Command(args[0])
 	return nil
 }

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+CGO_ENABLED=0 GOOS=linux go build .
+GOOS=darwin go build -o kragle.darwin .

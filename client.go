@@ -80,3 +80,7 @@ func listPeers() map[string]*nvim.Nvim {
 
 	return peers
 }
+
+func focusClient(client *nvim.Nvim) error {
+	return client.Command("call kragle#focus()")
+}
