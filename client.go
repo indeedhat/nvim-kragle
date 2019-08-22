@@ -8,6 +8,11 @@ import (
 	"github.com/neovim/go-client/nvim"
 )
 
+var (
+	connections = make(map[string]*nvim.Nvim)
+	peers       = make(map[string]*nvim.Nvim)
+)
+
 func connect(nvimPath string) (*nvim.Nvim, error) {
 	client, err := nvim.Dial(nvimPath)
 	if nil != err {
@@ -16,6 +21,11 @@ func connect(nvimPath string) (*nvim.Nvim, error) {
 	}
 
 	connections[nvimPath] = client
+
+	if clientIsPeer(client) {
+		peers[nvimPath] = client
+	}
+
 	return client, err
 }
 
@@ -67,16 +77,6 @@ func clientIsPeer(client *nvim.Nvim) bool {
 
 func listPeers() map[string]*nvim.Nvim {
 	connectAll()
-
-	peers := make(map[string]*nvim.Nvim)
-
-	for serverName, client := range connections {
-		if !clientIsPeer(client) {
-			continue
-		}
-
-		peers[serverName] = client
-	}
 
 	return peers
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/neovim/go-client/nvim/plugin"
 )
 
-var connections = make(map[string]*nvim.Nvim)
 var pluginPtr *plugin.Plugin
 
 func main() {
@@ -56,7 +55,7 @@ func kragleRemoteFocus(args []string) error {
 	serverName := args[0]
 
 	connectAll()
-	client, ok := connections[serverName]
+	client, ok := peers[serverName]
 	if !ok {
 		return errors.New("Invalid client name")
 	}
@@ -93,7 +92,7 @@ func kragleListFiles(includeSelf bool) ([]string, error) {
 		files = bufferNames(pluginPtr.Nvim)
 	}
 
-	for _, client := range connections {
+	for _, client := range peers {
 		if bufferFiles := bufferNames(client); 0 < len(bufferFiles) {
 			files = append(files, bufferFiles...)
 		}

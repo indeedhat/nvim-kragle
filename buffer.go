@@ -12,7 +12,7 @@ import (
 func findSwapOwner(path string) *nvim.Nvim {
 	connectAll()
 
-	for _, client := range connections {
+	for _, client := range peers {
 		if open := bufferBelongsToClient(client, path); open {
 			return client
 		}
@@ -34,9 +34,6 @@ func bufferBelongsToClient(client *nvim.Nvim, filePath string) bool {
 
 func bufferNames(client *nvim.Nvim) []string {
 	var files []string
-	if !clientIsPeer(client) {
-		return files
-	}
 
 	buffers, err := client.Buffers()
 	if nil != err {
@@ -105,7 +102,8 @@ func moveBufferToClient(buf *nvim.Buffer, bufName string, from, to *nvim.Nvim) e
 
 func openBufferOnClient(bufferName, clientName string) error {
 	connectAll()
-	client := connections[clientName]
+
+	client := peers[clientName]
 	if nil == client {
 		return errors.New("Bad client name")
 	}
