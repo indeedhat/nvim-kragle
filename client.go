@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 
@@ -64,6 +65,14 @@ func connectAll() {
 	}
 }
 
+func cleanupClosedPeers() {
+	for path, _ := range peers {
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			delete(peers, path)
+		}
+	}
+}
+
 func clientIsPeer(client *nvim.Nvim) bool {
 	if config.SameRoot {
 		var result string
@@ -77,6 +86,7 @@ func clientIsPeer(client *nvim.Nvim) bool {
 
 func listPeers() map[string]*nvim.Nvim {
 	connectAll()
+	cleanupClosedPeers()
 
 	return peers
 }
