@@ -27,41 +27,42 @@ endif
 " Public API
 " """"""""""
 function kragle#FocusRemote()
-    let a:server_list = KragleListServers()
-    let s:server_path = s:select("Remote Client:", a:server_list, v:true)
+    let l:server_list = KragleListServers()
+    let l:server_path = s:select("Remote Client:", l:server_list, v:true)
 
-    if "" != s:server_path
-        call KragleRemoteFocus(s:server_path)
+    if "" != l:server_path
+        echo "calling KragleRemoteFocus"
+        call KragleRemoteFocus(l:server_path)
     endif
 endfunction
 
 function kragle#OpenOnRemote(file)
-    let a:server_list = KragleListServers()
-    let s:server_path = s:select("Remote Client:", a:server_list, v:true)
+    let l:server_list = KragleListServers()
+    let l:server_path = s:select("Remote Client:", l:server_list, v:true)
 
-    if "" != s:server_path
-        call KragleRemoteOpen(a:file, s:server_path)
+    if "" != l:server_path
+        call KragleRemoteOpen(a:file, l:server_path)
     endif
 endfunction
 
 function kragle#Quit(save, force)
-    let a:command = ""
+    let l:command = ""
     if v:true == a:save
-        let a:command .= "w"
+        let l:command .= "w"
     endif
 
-    let a:command .= "qa"
+    let l:command .= "qa"
 
     if v:true == a:force 
-        let a:command .= "!"
+        let l:command .= "!"
     endif
 
-    call KragleCommandAll(a:command)
+    call KragleCommandAll(l:command)
 endfunction
 
 function kragle#SwitchToBuffer()
-    let a:file_list = KragleListAllFiles()
-    let s:file_path = s:select("Switch to file", a:file_list, v:false)
+    let l:file_list = KragleListAllFiles()
+    let s:file_path = s:select("Switch to file", l:file_list, v:false)
 
     if "" == s:file_path
         return 
@@ -71,8 +72,8 @@ function kragle#SwitchToBuffer()
 endfunction
 
 function kragle#AdoptBuffer()
-    let a:file_list = KragleListRemoteFiles()
-    let s:file_path = s:select("Adopt file", a:file_list, v:false)
+    let l:file_list = KragleListRemoteFiles()
+    let s:file_path = s:select("Adopt file", l:file_list, v:false)
 
     if "" == s:file_path
         return
@@ -83,11 +84,11 @@ function kragle#AdoptBuffer()
 endfunction
 
 function kragle#OrphanBuffer()
-    let a:server_list = KragleListServers()
-    let s:server_path = s:select("Orphan file:", a:server_list, v:true)
+    let l:server_list = KragleListServers()
+    let l:server_path = s:select("Orphan file:", l:server_list, v:true)
 
-    if "" != s:server_path
-        call KragleOrphanBuffer(expand("%:p"), s:server_path)
+    if "" != l:server_path
+        call KragleOrphanBuffer(expand("%:p"), l:server_path)
     endif
 endfunction
 
@@ -102,12 +103,12 @@ function! s:select(message, options, auto_pick)
         return a:options[0]
     endif
 
-    let s:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
-    if 1 > s:choice || len(copy(a:options)) < s:choice
+    let l:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
+    if 1 > l:choice || len(copy(a:options)) < l:choice
         return ""
     endif
 
-    return a:options[s:choice -1]
+    return a:options[l:choice -1]
 endfunction
 
 
