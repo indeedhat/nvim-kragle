@@ -153,16 +153,21 @@ function! kragle#focus()
     else
         call foreground()
     endif
+
 endfunction
 
-function s:init()
+function! kragle#trackWindowId()
+    if executable("xdotool")
+        let s:window_id = system("xdotool getactivewindow")
+    endif
+endfunction
+
+function! s:init()
     " initialize the go plugin
     call KragleInit(v:servername)
 
     " attempt to get the window id for later use with focus
-    if executable("xdotool")
-        let s:window_id = system("xdotool getactivewindow")
-    endif
+    call kragle#trackWindowId()
 endfunction
 
 
@@ -196,4 +201,5 @@ augroup Kragle
     autocmd!
     autocmd BufEnter * call kragle#bufEnter()
     autocmd SwapExists * call kragle#swapExists()
+    autocmd FocusGained * call kragle#trackWindowId()
 augroup END
