@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/neovim/go-client/nvim"
 )
@@ -12,9 +13,19 @@ import (
 var (
 	connections = make(map[string]*nvim.Nvim)
 	peers       = make(map[string]*nvim.Nvim)
+	blacklist   = make(map[string]*nvim.Nvim)
 )
 
 func connect(nvimPath string) (*nvim.Nvim, error) {
+	log("checking blacklist for: %s", nvimPath)
+
+	if clientIsBlacklisted(nvimPath) {
+		log("client is blacklisted")
+		return nil, nil
+	}
+
+	log("Dialing %s", nvimPath)
+
 	client, err := nvim.Dial(nvimPath)
 	if nil != err {
 		log("Failed to connect to %s", nvimPath)
@@ -23,7 +34,8 @@ func connect(nvimPath string) (*nvim.Nvim, error) {
 
 	connections[nvimPath] = client
 
-	if clientIsPeer(client) {
+	log("peer checking %s", nvimPath)
+	if clientIsPeer(client, nvimPath) {
 		peers[nvimPath] = client
 	}
 
@@ -73,10 +85,23 @@ func cleanupClosedPeers() {
 	}
 }
 
-func clientIsPeer(client *nvim.Nvim) bool {
+func clientIsPeer(client *nvim.Nvim, path string) bool {
 	if config.SameRoot {
 		var result string
-		_ = client.Call("getcwd", &result)
+
+		log("requesting pwd")
+
+		// TODO: this is not an ideal solution to the problem but the monkey patch will do for now
+		//       this stops a lockup when scanning headless instances
+		setTimeout(func() {
+			_ = client.Call("getcwd", &result)
+		}, 100*time.Millisecond)
+
+		if 0 == len(result) {
+			addToBlacklist(path)
+			return false
+		}
+
 		log("same check: %v - %v", result, config.ClientRoot)
 		return 0 < len(result) && result == config.ClientRoot
 	}
@@ -84,10 +109,21 @@ func clientIsPeer(client *nvim.Nvim) bool {
 	return true
 }
 
+func clientIsBlacklisted(path string) bool {
+	return nil != blacklist[path]
+}
+
+func addToBlacklist(path string) {
+	log("adding client %s to blacklist", path)
+	blacklist[path] = peers[path]
+	delete(peers, path)
+}
+
 func listPeers() map[string]*nvim.Nvim {
 	connectAll()
 	cleanupClosedPeers()
 
+	log("peer list %v", peers)
 	return peers
 }
 
