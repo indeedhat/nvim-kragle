@@ -201,5 +201,5 @@ augroup Kragle
     autocmd!
     autocmd BufEnter * call kragle#bufEnter()
     autocmd SwapExists * call kragle#swapExists()
-    autocmd FocusGained * call kragle#trackWindowId()
+    " autocmd FocusGained * call kragle#trackWindowId()
 augroup END
