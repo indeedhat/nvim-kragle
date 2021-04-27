@@ -26,23 +26,27 @@ endif
 
 " Public API
 " """"""""""
+function s:remoteFocus(server_path)
+    if "" != a:server_path
+        echo "calling KragleRemoteFocus"
+        call KragleRemoteFocus(a:server_path)
+    endif
+endfunction
+
 function kragle#FocusRemote()
     let l:server_list = KragleListServers()
-    let l:server_path = s:select("Remote Client:", l:server_list, v:true)
+    call s:select("Remote Client:", l:server_list, v:true, function("s:remoteFocus"))
+endfunction
 
-    if "" != l:server_path
-        echo "calling KragleRemoteFocus"
-        call KragleRemoteFocus(l:server_path)
+function s:openOnRemote(file, server_path)
+    if "" != a:server_path
+        call KragleRemoteOpen(a:file, a:server_path)
     endif
 endfunction
 
 function kragle#OpenOnRemote(file)
     let l:server_list = KragleListServers()
-    let l:server_path = s:select("Remote Client:", l:server_list, v:true)
-
-    if "" != l:server_path
-        call KragleRemoteOpen(a:file, l:server_path)
-    endif
+    call s:select("Remote Client:", l:server_list, v:true, function("s:openOnRemote", [a:file]))
 endfunction
 
 function kragle#Quit(save, force)
@@ -60,57 +64,83 @@ function kragle#Quit(save, force)
     call KragleCommandAll(l:command)
 endfunction
 
-function kragle#SwitchToBuffer()
-    let l:file_list = KragleListAllFiles()
-    let s:file_path = s:select("Switch to file", l:file_list, v:false)
-
-    if "" == s:file_path
+function s:switchtoBuffer(file_path)
+    if "" == a:file_path
         return 
     endif
 
-    execute "e " . fnameescape(s:file_path)
+    execute "e " . fnameescape(a:file_path)
+endfunction
+function kragle#SwitchToBuffer()
+    let l:file_list = KragleListAllFiles()
+    call s:select("Switch to file", l:file_list, v:false, function("s:switchtoBuffer"))
+endfunction
+
+function kragle#AdoptWrapper(file_path)
+    call KragleAdoptBuffer(a:file_path)
+endfunction
+
+function s:adoptBuffer(file_path)
+    if "" != a:file_path
+        echo 'Adopting ' . fnameescape(a:file_path)
+        call KragleAdoptBuffer(a:file_path)
+    endif
 endfunction
 
 function kragle#AdoptBuffer()
     let l:file_list = KragleListRemoteFiles()
-    let s:file_path = s:select("Adopt file", l:file_list, v:false)
+    call s:select("Adopt file", l:file_list, v:false, function("s:adoptBuffer"))
+endfunction
 
-    if "" == s:file_path
-        return
+function s:orphanBuffer(file_path, server_path)
+    if "" != a:server_path && "" != a:file_path
+        call KragleOrphanBuffer(a:file_path, a:server_path)
     endif
-
-    echo 'Adopting ' . fnameescape(s:file_path)
-    call KragleAdoptBuffer(s:file_path)
 endfunction
 
 function kragle#OrphanBuffer()
     let l:server_list = KragleListServers()
-    let l:server_path = s:select("Orphan file:", l:server_list, v:true)
-
-    if "" != l:server_path
-        call KragleOrphanBuffer(expand("%:p"), l:server_path)
-    endif
+    call s:select("Orphan file:", l:server_list, v:true, function("s:orphanBuffer", [expand("%:p")]))
 endfunction
 
 " Private 
 " """""""
 " of course some of these can all publicly be called in vim private is mearly intention
-function! s:select(message, options, auto_pick)
+function! s:select(message, options, auto_pick, cb)
     if empty(a:options) || 0 == len(copy(a:options)) 
-        return ""
+        return 
     elseif 1 == len(copy(a:options)) && v:true == a:auto_pick
         " if there is only one option might as well auto pick it
-        return a:options[0]
+        call a:cb(a:options[0])
+        return
+    endif
+
+    if get(g:, 'loaded_fzf', 0)
+        let out = s:fzf_select(a:message, a:options, a:cb)
+        return ""
     endif
 
     let l:choice = inputlist([a:message] + map(copy(a:options), '(v:key+1).". ".v:val'))
     if 1 > l:choice || len(copy(a:options)) < l:choice
-        return ""
+        return
     endif
 
-    return a:options[l:choice -1]
+    call a:cb(a:options[l:choice -1])
 endfunction
 
+function! s:fzf_select(message, choices, cb)
+    let options = [
+        \ '--tiebreak=index',
+        \ '--layout=reverse-list',
+    \ ]
+
+    call fzf#run({
+        \ 'source': a:choices,
+        \ 'down': '30%',
+        \ 'options': options,
+        \ 'sink': a:cb
+    \ })
+endfunction
 
 let s:buffer_clean = v:false
 function! kragle#swapExists()
