@@ -129,17 +129,20 @@ function! s:select(message, options, auto_pick, cb)
 endfunction
 
 function! s:fzf_select(message, choices, cb)
-    let options = [
-        \ '--tiebreak=index',
-        \ '--layout=reverse-list',
-    \ ]
-
     call fzf#run({
-        \ 'source': a:choices,
-        \ 'down': '30%',
-        \ 'options': options,
+        \ 'source': s:add_number_to_choices(a:choices),
+        \ 'down': '35%',
+        \ 'options': [
+            \ '--tiebreak=index',
+            \ '--layout=reverse-list',
+        \ ],
         \ 'sink': a:cb
     \ })
+endfunction
+
+" This has been lifted directly from the phpactor vim plugin src
+function! s:add_number_to_choices(choices)
+    return map(copy(a:choices), {key, value -> key + 1 .') '. value})
 endfunction
 
 let s:buffer_clean = v:false
