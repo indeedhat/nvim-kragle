@@ -136,7 +136,7 @@ function! s:fzf_select(message, choices, cb)
             \ '--tiebreak=index',
             \ '--layout=reverse-list',
         \ ],
-        \ 'sink': a:cb
+        \ 'sink': {key -> a:cb(a:choices[key - 1])}
     \ })
 endfunction
 
