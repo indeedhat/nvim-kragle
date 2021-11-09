@@ -34,13 +34,6 @@ function kragle#FocusRemote()
     \ })
 endfunction
 
-function kragle#OpenOnRemote(file)
-    let l:server_list = KragleListServers()
-    call s:select("Remote Client:", l:server_list, v:true, {
-    \    server_path -> "" != server_path && KragleRemoteOpen(a:file, server_path)
-    \ })
-endfunction
-
 function kragle#Quit(save, force)
     let l:write = v:true == a:save ? 'w' : ''
     let l:quit = 'qa'
@@ -191,7 +184,6 @@ call remote#host#RegisterPlugin(s:kragle_job, '0', [
 \    {'type': 'function', 'name': 'KragleInit', 'sync': 1, 'opts': {}},
 \    {'type': 'function', 'name': 'KragleListAllFiles', 'sync': 1, 'opts': {}},
 \    {'type': 'function', 'name': 'KragleListRemoteFiles', 'sync': 1, 'opts': {}},
-\    {'type': 'function', 'name': 'KragleRemoteOpen', 'sync': 1, 'opts': {}},
 \    {'type': 'function', 'name': 'KragleRemoteFocus', 'sync': 1, 'opts': {}},
 \    {'type': 'function', 'name': 'KragleRemoteFocusBuffer', 'sync': 1, 'opts': {}},
 \    {'type': 'function', 'name': 'KragleOrphanBuffer', 'sync': 1, 'opts': {}},

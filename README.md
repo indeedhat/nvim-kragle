@@ -1,6 +1,7 @@
 # Kragle
 > multiple instances of neovim held together with krazy glue
 
+
 ## Platform Requirements
 This has only been tested on Fedora 29 using neovim 0.3.8\
 I can think of no reason why this would not work on other linux distributions although it is as of
@@ -20,7 +21,15 @@ traditional window manager in linux but i haven't tested it.
 ## Installation
 It can of course be installed with your package manager of choice, mine is Plug
 Vim Plug\
-`Plug 'indeedhat/nvim-kragle', { 'do': './install.sh' }`
+`Plug 'indeedhat/nvim-kragle', { 'do': 'make install' }`
+
+Packer\
+```lua
+    use {
+        'indeedhat/nvim-kraggle',
+        run = 'make install'
+    }
+```
 
 The install.sh script will setup the environment for your environment provided it is supported
 
@@ -56,11 +65,6 @@ Quit all connected clients (including self)\
 Switch window focus to a remote instance.\
 This will auto focus if there is only one remote instance otherwise it will prompt for selection
 
-`kragle#OpenOnRemote(path)`\
-Open a buffer by path on a remote client.\
-If more than one remote client exists it will ask for a choice\
-**path**: string (the full path of the file to be opened)
-
 ## My Bindings
 ```vim
 " adopt a buffer from a remote terminal
@@ -81,6 +85,15 @@ noremap <Leader>kf :call kragle#FocusRemote()<CR>
 " Select and switch to an open buffer (all connected terminals)
 noremap <Leader>kl :call kragle#SwitchToBuffer()<CR>
 ```
+
+## TODO
+- [x] refactor the go mess
+- [ ] optimise some of the shitty implementation
+- [ ] move as much of the viml over to lua as possible
+- [ ] register commands rather than the public method approach
+- [ ] add a configurable list of buffer names to ignore
+- [ ] think up a better name
+- [ ] check off some tasks on the roadmap
 
 ## RoadMap
 - [x] make plugin load prebuilt binary from plugin dir

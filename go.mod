@@ -1,4 +1,4 @@
-module kragle
+module github.com/indeedhat/nvim-kraggle
 
 go 1.11
 
